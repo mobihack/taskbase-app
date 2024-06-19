@@ -1,4 +1,5 @@
-import type { Config } from "tailwindcss"
+import type { Config } from "tailwindcss";
+import colors from "tailwindcss/colors";
 
 const config = {
   darkMode: ["class"],
@@ -10,6 +11,13 @@ const config = {
   ],
   prefix: "",
   theme: {
+    colors: {
+      ...colors,
+      brand: {
+        main: colors.indigo[600],
+        ...colors.indigo,
+      },
+    },
     container: {
       center: true,
       padding: "2rem",
@@ -35,6 +43,6 @@ const config = {
     },
   },
   plugins: [require("tailwindcss-animate")],
-} satisfies Config
+} satisfies Config;
 
-export default config
+export default config;
