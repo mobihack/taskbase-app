@@ -9,7 +9,7 @@ export default function App({ Component, pageProps }: AppProps) {
     <main
       className={`flex flex-col items-center justify-between ${inter.className}`}
     >
-      <div className="max-w-3xl w-full">
+      <div className="max-w-3xl w-full px-4">
         <Component {...pageProps} />
       </div>
     </main>
