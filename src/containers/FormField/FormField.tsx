@@ -1,4 +1,5 @@
 import {
+  HelperText,
   Input,
   InputLabel,
   InputProps,
@@ -46,14 +47,7 @@ export const FormField = ({
         {...props}
       />
       {helperText && (
-        <p
-          className={clsx(
-            "px-3 text-gray-500 text-xs mt-1",
-            error && "text-red-500"
-          )}
-        >
-          {helperText}
-        </p>
+        <HelperText error={error} helperText={helperText} className="mt-1" />
       )}
     </div>
   );

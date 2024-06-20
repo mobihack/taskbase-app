@@ -7,3 +7,4 @@ export * from "./Dialog";
 export * from "./Textarea";
 export * from "./Calendar";
 export * from "./Popover";
+export * from "./HelperText";
