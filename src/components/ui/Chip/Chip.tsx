@@ -31,11 +31,11 @@ const chipVariants = cva(
   }
 );
 
-export interface ButtonProps
+export interface ChipProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof chipVariants> {}
 
-const Chip = React.forwardRef<HTMLButtonElement, ButtonProps>(
+const Chip = React.forwardRef<HTMLButtonElement, ChipProps>(
   ({ className, variant, size, ...props }, ref) => {
     return (
       <button
