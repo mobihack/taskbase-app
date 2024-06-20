@@ -8,7 +8,10 @@ const InputLabel = forwardRef<HTMLLabelElement, InputLabelProps>(
   ({ className, ...props }, ref) => {
     return (
       <label
-        className={cn("flex w-full px-3 py-2 text-xs font-medium", className)}
+        className={cn(
+          "flex w-full px-3 py-2 text-xs font-medium text-gray-800",
+          className
+        )}
         ref={ref}
         {...props}
       />
