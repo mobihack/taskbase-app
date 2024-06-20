@@ -1,5 +1,5 @@
 import { Button, DropdownMenu } from "@/components";
-import { TaskStatus } from "@/constants";
+import { DATE_FORMAT, TaskStatus } from "@/constants";
 import clsx from "clsx";
 import dayjs from "dayjs";
 import {
@@ -79,7 +79,7 @@ export const TaskCard = ({
         <p className="text-xs text-gray-600 line-clamp-1">{description}</p>
 
         <time
-          title={dayjs(dueAt).format("MMM MM, YYYY")}
+          title={dayjs(dueAt).format(DATE_FORMAT.DEFAULT)}
           dateTime={dayjs(dueAt).toString()}
           className="hover:!cursor-default text-xs text-gray-600 inline-flex items-center gap-1.5 mt-2 border border-gray-300 px-1.5 py-0.5 rounded-xl"
         >

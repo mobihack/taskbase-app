@@ -3,6 +3,7 @@ import { FiArrowRight } from "react-icons/fi";
 import { Task } from "../../DashboardMain.utils";
 import { ReactNode } from "react";
 import dayjs from "dayjs";
+import { DATE_FORMAT } from "@/constants";
 
 const INITIAL_VALUE = {
   title: "",
@@ -56,7 +57,7 @@ export const TaskViewerDialog = ({
           <Item name="Description" value={task.description} />
           <Item
             name="Due On"
-            value={`${dayjs(task.dueAt).format("MMM MM, YYYY")} (${
+            value={`${dayjs(task.dueAt).format(DATE_FORMAT.DEFAULT)} (${
               isAlreadyDue ? "Expired" : "Due in"
             } 
             ${dayjs().from(dayjs(task.dueAt), true)}${
@@ -67,11 +68,11 @@ export const TaskViewerDialog = ({
           <div className="grid grid-cols-2 mt-4">
             <Item
               name="Created On"
-              value={`${dayjs(task.createdAt).format("MMM MM, YYYY")}`}
+              value={`${dayjs(task.createdAt).format(DATE_FORMAT.DEFAULT)}`}
             />
             <Item
               name="Updated On"
-              value={`${dayjs(task.updatedAt).format("MMM MM, YYYY")}`}
+              value={`${dayjs(task.updatedAt).format(DATE_FORMAT.DEFAULT)}`}
             />
           </div>
 

@@ -1,4 +1,5 @@
 import { TaskStatus } from "@/constants";
+import dayjs from "dayjs";
 
 const SAMPLE_TASK = {
   id: "",
@@ -7,10 +8,10 @@ const SAMPLE_TASK = {
     "Hello World Hello World Hello World Hello World Hello World Hello World Hello World",
   status: TaskStatus.TODO,
 
-  dueAt: new Date("10/12/2025").toISOString(),
+  dueAt: dayjs("10-12-2025").toISOString(),
 
-  createdAt: new Date("10/12/2023 06:00pm").toISOString(),
-  updatedAt: new Date("10/12/2023 12:00pm").toISOString(),
+  createdAt: dayjs("2023-10-31T03:00:00").toISOString(),
+  updatedAt: dayjs("2024-04-21T12:00:00").toISOString(),
 };
 
 export type Task = typeof SAMPLE_TASK;
