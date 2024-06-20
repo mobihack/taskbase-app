@@ -5,3 +5,4 @@ export * from "./DropdownMenu";
 export * from "./Chip";
 export * from "./Dialog";
 export * from "./Textarea";
+export * from "./Calendar";
