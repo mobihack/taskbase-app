@@ -25,7 +25,7 @@ export const CalendarPicker = ({
         <Button
           variant={"outline"}
           className={cn(
-            "w-full justify-start text-left font-normal px-3",
+            "w-full justify-start text-left font-normal px-3 border-gray-200 hover:border-brand-200",
             !value && "text-muted-foreground"
           )}
         >
