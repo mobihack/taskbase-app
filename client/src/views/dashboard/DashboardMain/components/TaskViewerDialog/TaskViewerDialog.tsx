@@ -59,12 +59,16 @@ export const TaskViewerDialog = ({
           <Item name="Description" value={task.description} />
           <Item
             name="Due On"
-            value={`${dayjs(task.dueAt).format(DATE_FORMAT.DEFAULT)} (${
-              isAlreadyDue ? "Expired" : "Due in"
-            } 
+            value={
+              task.dueAt
+                ? `${dayjs(task.dueAt).format(DATE_FORMAT.DEFAULT)} (${
+                    isAlreadyDue ? "Expired" : "Due in"
+                  } 
             ${dayjs().from(dayjs(task.dueAt), true)}${
-              isAlreadyDue ? " ago" : ""
-            })`}
+                    isAlreadyDue ? " ago" : ""
+                  })`
+                : "-"
+            }
           />
 
           <div className="grid grid-cols-2 mt-4">

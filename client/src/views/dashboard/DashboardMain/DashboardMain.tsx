@@ -4,12 +4,19 @@ import { DndContext, DragEndEvent } from "@dnd-kit/core";
 import { useRouter } from "next/router";
 import { useMemo, useState } from "react";
 import toast from "react-hot-toast";
-import { FiLogOut, FiPlus } from "react-icons/fi";
+import { FiCheck, FiLogOut, FiPlus } from "react-icons/fi";
+import { RxCaretSort } from "react-icons/rx";
 
 import { deleteTaskAPI } from "@/api/task/deleteTaskAPI";
 import { getTasksAPI } from "@/api/task/getTasksAPI";
 import { patchTaskAPI } from "@/api/task/patchTaskAPI";
-import { Button, Chip, Input, LoadingIndicator } from "@/components";
+import {
+  Button,
+  Chip,
+  DropdownMenu,
+  Input,
+  LoadingIndicator,
+} from "@/components";
 import { TaskStatus } from "@/constants";
 import { ConfirmDialog } from "@/containers";
 import { useAuth } from "@/context/useAuth";
@@ -23,9 +30,14 @@ import {
   TaskList,
   TaskViewerDialog,
 } from "./components";
-import { Task } from "./DashboardMain.utils";
-
-type TaskStatusKey = keyof typeof TaskStatus;
+import {
+  filterBySearchTerm,
+  SortCriteria,
+  SortNameMap,
+  sortTasks,
+  Task,
+  TaskStatusKey,
+} from "./DashboardMain.utils";
 
 export const DashboardMain = (): JSX.Element => {
   const auth = useAuth();
@@ -46,30 +58,31 @@ export const DashboardMain = (): JSX.Element => {
   const [selectedId, setSelectedId] = useState<string | undefined>(undefined);
   const [filters, setFilters] = useState<TaskStatus[]>([]);
   const [searchTerm, setSearchTerm] = useState<string | undefined>(undefined);
+  const [sortBy, setSortBy] = useState<SortCriteria>(SortCriteria.CREATED_AT);
 
-  const statusFilteredTasks = useMemo(
-    () =>
-      Object.keys(TaskStatus)
-        .filter((key) => {
-          if (filters.length === 0) return true;
-          else return filters.includes(TaskStatus[key as TaskStatusKey]);
-        })
-        .reduce((accumulator: Partial<Record<TaskStatusKey, Task[]>>, key) => {
-          accumulator[key as TaskStatusKey] = (tasks || []).filter((item) => {
-            const hasSearchTerm = searchTerm
-              ? item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                item.description
-                  .toLowerCase()
-                  .includes(searchTerm.toLowerCase())
-              : true;
-            return (
-              hasSearchTerm && item.status === TaskStatus[key as TaskStatusKey]
-            );
-          });
-          return accumulator;
-        }, {}),
-    [tasks, filters, searchTerm]
-  );
+  const statusFilteredTasks = useMemo(() => {
+    // Step 1: Filter tasks by search term
+    const searchedTasks = filterBySearchTerm(tasks || [], searchTerm);
+
+    // Step 2: Filter tasks by status and sort them in one go
+    const filteredAndSortedTasks = Object.keys(TaskStatus).reduce(
+      (acc, key) => {
+        const taskKey = key as TaskStatusKey;
+
+        if (filters.length === 0 || filters.includes(TaskStatus[taskKey])) {
+          const statusFiltered = searchedTasks.filter(
+            (task) => task.status === TaskStatus[taskKey]
+          );
+          acc[taskKey] = sortTasks(statusFiltered, sortBy);
+        }
+
+        return acc;
+      },
+      {} as Partial<Record<TaskStatusKey, Task[]>>
+    );
+
+    return filteredAndSortedTasks;
+  }, [tasks, searchTerm, filters, sortBy]);
 
   const selectedTask = useMemo(() => {
     return (tasks || []).find((item) => item.id === selectedId);
@@ -85,6 +98,7 @@ export const DashboardMain = (): JSX.Element => {
 
     const temp = [...(tasks || [])];
 
+    // dragged item
     var index = temp.findIndex((x) => x.id == newItem);
 
     if (
@@ -125,9 +139,11 @@ export const DashboardMain = (): JSX.Element => {
   };
 
   const onCloseDialog = () => {
+    // close all dialogs
     setIsDeleteModalOpen(false);
     setIsViewerModalOpen(false);
     setDialogMode(false);
+    // clear selected file
     setSelectedId(undefined);
   };
 
@@ -224,7 +240,7 @@ export const DashboardMain = (): JSX.Element => {
             Search through name and description.
           </p>
 
-          <div className="flex gap-2 pl-3 mt-3">
+          <div className="flex items-center gap-2 pl-3 mt-3">
             <Chip
               variant={filters.length === 0 ? "filled" : "outlined"}
               size="small"
@@ -259,6 +275,36 @@ export const DashboardMain = (): JSX.Element => {
             >
               Completed
             </Chip>
+
+            <DropdownMenu.root>
+              <DropdownMenu.trigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-brand-600 text-sm ml-auto"
+                >
+                  <RxCaretSort className="mr-2 mt-0.5" /> {SortNameMap[sortBy]}
+                </Button>
+              </DropdownMenu.trigger>
+              <DropdownMenu.content className="w-40">
+                <DropdownMenu.label>Sort</DropdownMenu.label>
+                <DropdownMenu.separator />
+                <DropdownMenu.group>
+                  {Object.keys(SortNameMap).map((key) => (
+                    <DropdownMenu.item
+                      key={key}
+                      className="text-brand-500"
+                      onClick={() => {
+                        setSortBy(key as SortCriteria);
+                      }}
+                    >
+                      <span>{SortNameMap[key as SortCriteria]}</span>
+                      {key === sortBy && <FiCheck className="ml-auto" />}
+                    </DropdownMenu.item>
+                  ))}
+                </DropdownMenu.group>
+              </DropdownMenu.content>
+            </DropdownMenu.root>
           </div>
         </div>
 
