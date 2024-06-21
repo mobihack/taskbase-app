@@ -1,3 +1,3 @@
 export const CONFIG = {
-  apiUrl: "https://localhost:8001/api",
+  apiUrl: process.env.NEXT_PUBLIC_API_URL,
 };
