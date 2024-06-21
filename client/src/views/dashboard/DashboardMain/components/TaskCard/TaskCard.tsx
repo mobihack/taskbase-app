@@ -56,10 +56,10 @@ export const TaskCard = ({
       ref={setNodeRef}
       style={{ transform: CSS.Translate.toString(transform) }}
       className={clsx(
-        isDragging && "!bg-white border !border-gray-200",
-        "group hover:bg-slate-50",
+        "group bg-white hover:bg-brand-50 transition-colors",
         "px-4 md:!border md:rounded-xl rounded-none",
-        "flex items-center justify-between gap-4"
+        "flex items-center justify-between gap-4",
+        isDragging && "border !bg-white !border-gray-200"
       )}
     >
       <div className="-ml-2 -mr-2 flex h-full">
