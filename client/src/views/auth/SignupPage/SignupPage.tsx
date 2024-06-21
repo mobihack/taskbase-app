@@ -1,31 +1,40 @@
+import { postSignUpAPI } from "@/api/auth/postSignUpAPI";
 import { Button } from "@/components";
-import { CONFIG } from "@/config";
 import { FormField } from "@/containers";
+import { useAuth } from "@/context/useAuth";
 import { zodResolver } from "@hookform/resolvers/zod";
 import clsx from "clsx";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 import { z } from "zod";
-import { toast } from "react-hot-toast";
-import { postLogInAPI } from "@/api/auth/postLogInAPI";
-import { useRouter } from "next/router";
-import { useAuth } from "@/context/useAuth";
-
-const userSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(8),
-});
-
+const userSchema = z
+  .object({
+    email: z.string().email(),
+    password: z.string().min(8),
+    password_confirm: z.string().min(8),
+  })
+  .superRefine(({ password_confirm, password }, ctx) => {
+    if (password_confirm !== password) {
+      ctx.addIssue({
+        code: "custom",
+        message: "Passwords did not match",
+        path: ["password_confirm"],
+      });
+    }
+  });
 type FormValues = z.infer<typeof userSchema>;
 
-export const LoginPage = (): JSX.Element => {
-  const router = useRouter();
+export const SignupPage = (): JSX.Element => {
   const auth = useAuth();
-  const { handleSubmit, control } = useForm<FormValues>({
+  const router = useRouter();
+  const { control, handleSubmit } = useForm<FormValues>({
     defaultValues: {
       email: "",
       password: "",
+      password_confirm: "",
     },
     resolver: zodResolver(userSchema),
   });
@@ -34,23 +43,19 @@ export const LoginPage = (): JSX.Element => {
 
   const onSubmit: SubmitHandler<FormValues> = (data) => {
     setIsLoading(true);
-    toast.promise(auth.logIn(data.email, data.password), {
-      loading: "Signing In",
+    toast.promise(auth.signUp(data.email, data.password), {
+      loading: "Signing Up",
       success: () => {
         router.push("/dashboard/main");
         setIsLoading(false);
-        return "Signed in successfully";
+        return "Signed up successfully";
       },
       error: (err) => {
         setIsLoading(false);
-        return err?.response?.data?.message || "Error during sign-in";
+        return err?.response?.data?.message || "Error during sign-up";
       },
     });
   };
-
-  if (auth.currentUser) {
-    router.push("/dashboard/main");
-  }
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center h-96">
@@ -64,7 +69,7 @@ export const LoginPage = (): JSX.Element => {
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="/taskbase-logo.png" className="w-1/2 mx-auto my-4" alt="" />
         <h1 className="text-center font-medium text-gray-500 mb-4">
-          Login to continue to your tasks
+          Create an account to continue
         </h1>
 
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -106,6 +111,25 @@ export const LoginPage = (): JSX.Element => {
               )}
             />
 
+            <Controller
+              control={control}
+              name="password_confirm"
+              render={({ field, fieldState }) => (
+                <FormField
+                  {...field}
+                  type="password"
+                  label="Confirm Password"
+                  placeholder="•••••••••••••••••"
+                  error={Boolean(fieldState.error)}
+                  helperText={
+                    (fieldState.error && fieldState.error?.message) ||
+                    "Confirm your personal password"
+                  }
+                  disabled={isLoading}
+                />
+              )}
+            />
+
             <Button width="full" className="mt-6" disabled={isLoading}>
               Login
             </Button>
@@ -113,9 +137,9 @@ export const LoginPage = (): JSX.Element => {
         </form>
       </div>
       <p className="text-sm text-gray-600 mt-4">
-        New to {"TaskBase"}?{" "}
-        <Link className="text-brand-main underline" href="/auth/signup">
-          Create an Account
+        Already got a {"TaskBase"} account?{" "}
+        <Link className="text-brand-main underline" href="/auth/login">
+          Login
         </Link>
       </p>
     </div>

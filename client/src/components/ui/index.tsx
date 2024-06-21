@@ -8,3 +8,4 @@ export * from "./Textarea";
 export * from "./Calendar";
 export * from "./Popover";
 export * from "./HelperText";
+export { LoadingIndicator } from "./LoadingIndicator";

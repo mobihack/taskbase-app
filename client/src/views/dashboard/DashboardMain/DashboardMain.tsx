@@ -1,16 +1,41 @@
 "use client";
 
-import { Button, Input, Chip } from "@/components";
+import { Button, Input, Chip, LoadingIndicator } from "@/components";
 import { TaskStatus } from "@/constants";
-import { ConfirmDialog, TaskCard, TaskList } from "@/containers";
+import { ConfirmDialog } from "@/containers";
 import { FiLogOut, FiPlus } from "react-icons/fi";
 import { DndContext, DragEndEvent } from "@dnd-kit/core";
 import { useMemo, useState } from "react";
-import { TaskFormDialog, TaskViewerDialog } from "./components";
-import { INITIAL_STATE, Task } from "./DashboardMain.utils";
+import {
+  TaskFormDialog,
+  TaskViewerDialog,
+  TaskCard,
+  TaskList,
+  DashboardHeader,
+  TaskEmpty,
+} from "./components";
+import { Task } from "./DashboardMain.utils";
+import { useFetch } from "@/hooks";
+import { getTasksAPI } from "@/api/task/getTasksAPI";
+import toast from "react-hot-toast";
+import { deleteTaskAPI } from "@/api/task/deleteTaskAPI";
+import { patchTaskAPI } from "@/api/task/patchTaskAPI";
+import { useAuth } from "@/context/useAuth";
+import { useRouter } from "next/router";
+
+type TaskStatusKey = keyof typeof TaskStatus;
 
 export const DashboardMain = (): JSX.Element => {
-  const [tasks, setTasks] = useState<Task[]>(INITIAL_STATE);
+  const auth = useAuth();
+  const router = useRouter();
+  const {
+    data: tasks,
+    mutate,
+    isLoading: isTaskLoading,
+    isError,
+  } = useFetch("/task", getTasksAPI);
+
+  const [isLoading, setIsLoading] = useState(false);
   const [dialogMode, setDialogMode] = useState<"create" | "modify" | false>(
     false
   );
@@ -25,30 +50,30 @@ export const DashboardMain = (): JSX.Element => {
       Object.keys(TaskStatus)
         .filter((key) => {
           if (filters.length === 0) return true;
-          else
-            return filters.includes(TaskStatus[key as keyof typeof TaskStatus]);
+          else return filters.includes(TaskStatus[key as TaskStatusKey]);
         })
-        .reduce(
-          (
-            accumulator: Partial<Record<keyof typeof TaskStatus, Task[]>>,
-            key
-          ) => (
-            (accumulator[key as keyof typeof TaskStatus] = tasks.filter(
-              (item) =>
-                item.status === TaskStatus[key as keyof typeof TaskStatus]
-            )),
-            accumulator
-          ),
-          {}
-        ),
-    [tasks, filters]
+        .reduce((accumulator: Partial<Record<TaskStatusKey, Task[]>>, key) => {
+          accumulator[key as TaskStatusKey] = (tasks || []).filter((item) => {
+            const hasSearchTerm = searchTerm
+              ? item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                item.description
+                  .toLowerCase()
+                  .includes(searchTerm.toLowerCase())
+              : true;
+            return (
+              hasSearchTerm && item.status === TaskStatus[key as TaskStatusKey]
+            );
+          });
+          return accumulator;
+        }, {}),
+    [tasks, filters, searchTerm]
   );
 
   const selectedTask = useMemo(() => {
-    return tasks.find((item) => item.id === selectedId);
+    return (tasks || []).find((item) => item.id === selectedId);
   }, [tasks, selectedId]);
 
-  const onMoveTaskStatus = (e: DragEndEvent) => {
+  const onMoveTaskStatus = async (e: DragEndEvent) => {
     // id of dragged item
     const newItem = e.active.data.current?.id;
 
@@ -56,7 +81,7 @@ export const DashboardMain = (): JSX.Element => {
     const dropContainerId =
       e.collisions && e.collisions.length > 0 && e.collisions[0].id;
 
-    const temp = [...tasks];
+    const temp = [...(tasks || [])];
 
     var index = temp.findIndex((x) => x.id == newItem);
 
@@ -69,12 +94,32 @@ export const DashboardMain = (): JSX.Element => {
       return;
     }
 
+    if (temp[index].status === (dropContainerId as TaskStatus)) {
+      // no change in status
+      return;
+    }
+
     temp[index] = {
       ...temp[index],
       status: dropContainerId as TaskStatus,
     };
 
-    setTasks(temp);
+    toast.promise(
+      patchTaskAPI(temp[index].id, { status: dropContainerId as TaskStatus }),
+      {
+        loading: "Updating Task",
+        success: () => {
+          setIsLoading(false);
+          onCloseDialog();
+          mutate(temp);
+          return "Task updated successfully";
+        },
+        error: (err) => {
+          setIsLoading(false);
+          return err?.response?.data?.message || "Error during updation";
+        },
+      }
+    );
   };
 
   const onCloseDialog = () => {
@@ -118,42 +163,53 @@ export const DashboardMain = (): JSX.Element => {
   };
 
   const onDeleteTask = (id: string) => {
-    // asdasd
     setSelectedId(id);
     setIsDeleteModalOpen(true);
   };
 
   const onDeleteTaskConfirmed = () => {
-    // asdasd
-    // selectedId
-    onCloseDeleteConfirmation();
+    if (!selectedId) return;
+
+    toast.promise(deleteTaskAPI(selectedId), {
+      loading: "Deleting Task",
+      success: () => {
+        setIsLoading(false);
+        onCloseDialog();
+        mutate();
+        return "Task deleted successfully";
+      },
+      error: (err) => {
+        setIsLoading(false);
+        return err?.response?.data?.message || "Error during deletion";
+      },
+    });
+    onCloseDialog();
   };
 
-  const onCloseDeleteConfirmation = () => {
-    setIsDeleteModalOpen(false);
-    setSelectedId(undefined);
+  const onLogOut = () => {
+    toast.promise(auth.logOut(), {
+      loading: "Signing Out",
+      success: () => {
+        router.push("/auth/login");
+        return "Signed Out";
+      },
+      error: (err) => {
+        return err?.response?.data?.message || "Error during logout";
+      },
+    });
   };
+
+  if (!auth.currentUser) {
+    router.push("/auth/login");
+  }
 
   return (
     <>
-      <div className="max-w-lg mx-auto w-full py-16">
-        <div className="flex items-center justify-between gap-2 rounded-xl mb-12">
-          <h1 className="text-2xl sm:text-3xl">{"TaskBase™"}</h1>
-          <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setDialogMode("create")}
-            >
-              <FiPlus className="mr-2" />
-              Add Task
-            </Button>
-            <Button variant="outline" size="sm">
-              <FiLogOut className="mr-2" />
-              Logout
-            </Button>
-          </div>
-        </div>
+      <div className="w-full py-16">
+        <DashboardHeader
+          onCreateClicked={() => setDialogMode("create")}
+          onLogOutClicked={onLogOut}
+        />
 
         <div className="my-12">
           <Input
@@ -204,34 +260,45 @@ export const DashboardMain = (): JSX.Element => {
           </div>
         </div>
 
-        <DndContext onDragEnd={onMoveTaskStatus}>
-          <div className="flex flex-col gap-8">
-            {Object.keys(statusFilteredTasks).map((key) => (
-              <TaskList
-                key={key}
-                status={key as keyof typeof TaskStatus}
-                title={TaskStatus[key as keyof typeof TaskStatus]}
-                count={
-                  statusFilteredTasks[key as keyof typeof TaskStatus]?.length ||
-                  0
-                }
-              >
-                {statusFilteredTasks[key as keyof typeof TaskStatus]?.map(
-                  (item, i) => (
-                    <TaskCard
-                      key={i} // TODO: change to unique id from db
-                      {...item}
-                      status={TaskStatus[key as keyof typeof TaskStatus]}
-                      onClick={onViewTask}
-                      onModify={onEditTask}
-                      onDelete={onDeleteTask}
-                    />
-                  )
-                )}
-              </TaskList>
-            ))}
+        {isTaskLoading ? (
+          <div className="flex justify-center">
+            <LoadingIndicator />
           </div>
-        </DndContext>
+        ) : (
+          <>
+            {tasks?.length === 0 ? (
+              <TaskEmpty />
+            ) : (
+              <DndContext onDragEnd={onMoveTaskStatus}>
+                <div className="grid md:grid-cols-3 grid-cols-1 gap-8">
+                  {Object.keys(statusFilteredTasks).map((key) => (
+                    <TaskList
+                      key={key}
+                      status={key as TaskStatusKey}
+                      title={TaskStatus[key as TaskStatusKey]}
+                      count={
+                        statusFilteredTasks[key as TaskStatusKey]?.length || 0
+                      }
+                    >
+                      {statusFilteredTasks[key as TaskStatusKey]?.map(
+                        (item, i) => (
+                          <TaskCard
+                            key={item.id}
+                            {...item}
+                            status={TaskStatus[key as TaskStatusKey]}
+                            onClick={onViewTask}
+                            onModify={onEditTask}
+                            onDelete={onDeleteTask}
+                          />
+                        )
+                      )}
+                    </TaskList>
+                  ))}
+                </div>
+              </DndContext>
+            )}
+          </>
+        )}
       </div>
 
       <TaskFormDialog
@@ -239,6 +306,7 @@ export const DashboardMain = (): JSX.Element => {
         onClose={onCloseDialog}
         onSubmit={async () => {}}
         initialValue={selectedTask}
+        onUpdate={() => mutate()}
       />
 
       <TaskViewerDialog
@@ -251,7 +319,7 @@ export const DashboardMain = (): JSX.Element => {
       <ConfirmDialog
         open={isDeleteModalOpen}
         onConfirm={onDeleteTaskConfirmed}
-        onClose={onCloseDeleteConfirmation}
+        onClose={onCloseDialog}
         title="Delete Task"
         description="Confirm deletion of task permanently"
       />

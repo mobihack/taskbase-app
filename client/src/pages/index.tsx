@@ -1,11 +1,16 @@
+import { useAuth } from "@/context/useAuth";
+import { useRouter } from "next/router";
+
 export default function Home() {
-  return (
-    <main
-      className={`flex min-h-screen flex-col items-center justify-between p-24`}
-    >
-      <div className="z-10 max-w-4xl w-full items-center justify-between font-mono text-sm lg:flex">
-        Hello
-      </div>
-    </main>
-  );
+  const { currentUser } = useAuth();
+  const router = useRouter();
+
+  if (currentUser) {
+    router.push("/dashboard/main");
+  }
+  {
+    router.push("/auth/login");
+  }
+
+  return <div />;
 }

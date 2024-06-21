@@ -57,9 +57,9 @@ export const TaskCard = ({
       ref={setNodeRef}
       style={{ transform: CSS.Translate.toString(transform) }}
       className={clsx(
-        isDragging && "!bg-white rounded-xl border border-gray-200",
+        isDragging && "!bg-white border !border-gray-200",
         "group hover:bg-slate-50",
-        "px-4",
+        "px-4 md:!border md:rounded-xl rounded-none",
         "flex items-center justify-between gap-4"
       )}
     >
@@ -74,19 +74,23 @@ export const TaskCard = ({
         </button>
       </div>
 
-      <button className="text-left py-3" onClick={() => onClick(id)}>
+      <button className="text-left flex-1 py-3" onClick={() => onClick(id)}>
         <p className="text-sm">{title}</p>
         <p className="text-xs text-gray-600 line-clamp-1">{description}</p>
 
-        <time
-          title={dayjs(dueAt).format(DATE_FORMAT.DEFAULT)}
-          dateTime={dayjs(dueAt).toString()}
-          className="hover:!cursor-default text-xs text-gray-600 inline-flex items-center gap-1.5 mt-2 border border-gray-300 px-1.5 py-0.5 rounded-xl"
-        >
-          <FiClock className="mt-0.5" />
-          {isAlreadyDue ? "Expired" : "Due in"}{" "}
-          {dayjs().from(dayjs(dueAt), true)} {isAlreadyDue && "ago"}
-        </time>
+        {dueAt && (
+          <time
+            title={dayjs(dueAt).format(DATE_FORMAT.DEFAULT)}
+            dateTime={dayjs(dueAt).toString()}
+            className="hover:!cursor-default text-[0.65rem] text-gray-600 inline-flex items-center gap-1.5 mt-2 border border-gray-300 px-1.5 py-0.5 rounded-xl"
+          >
+            <FiClock />
+            <span className=" mt-[0.05rem]">
+              {isAlreadyDue ? "Expired" : "Due in"}{" "}
+              {dayjs().from(dayjs(dueAt), true)} {isAlreadyDue && "ago"}
+            </span>
+          </time>
+        )}
       </button>
       <div className="flex gap-1">
         <DropdownMenu.root>

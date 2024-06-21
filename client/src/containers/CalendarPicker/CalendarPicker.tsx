@@ -37,7 +37,9 @@ export const CalendarPicker = ({
         <Calendar
           mode="single"
           selected={value ? new Date(value) : undefined}
-          onSelect={(day) => onChange(day && day.toDateString())}
+          onSelect={(day) => {
+            onChange(day ? day.toDateString() : "");
+          }}
           initialFocus
           onDayBlur={onBlur}
           className="bg-white"

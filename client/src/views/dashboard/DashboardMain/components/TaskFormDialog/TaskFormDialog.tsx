@@ -1,11 +1,14 @@
 import { Button, Dialog, HelperText, InputLabel } from "@/components";
 import { CalendarPicker, FormField } from "@/containers";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { FiArrowRight } from "react-icons/fi";
+import toast from "react-hot-toast";
+import { postTaskAPI } from "@/api/task/postTaskAPI";
+import { patchTaskAPI } from "@/api/task/patchTaskAPI";
 
 const formSchema = z.object({
   title: z.string().min(3, { message: "Minimum 3 characters required" }),
@@ -16,6 +19,7 @@ const formSchema = z.object({
         return new Date(date) >= new Date(Date.now());
       }, "The date must be a future date")
     )
+    .nullish()
     .or(z.literal("")),
 });
 
@@ -25,12 +29,13 @@ const INITIAL_VALUE = {
   dueAt: "",
 };
 
-type FormValues = z.infer<typeof formSchema>;
+type FormValues = z.infer<typeof formSchema> & { id: string };
 
 interface Props {
   onClose: () => void;
   onSubmit: (values: unknown) => Promise<void>;
 
+  onUpdate: () => void;
   open: false | "create" | "modify";
   initialValue: FormValues | undefined;
 }
@@ -38,12 +43,15 @@ interface Props {
 export const TaskFormDialog = ({
   open,
   onClose,
+  onUpdate,
   initialValue,
 }: Props): JSX.Element => {
   const { control, handleSubmit, reset } = useForm<FormValues>({
     defaultValues: INITIAL_VALUE,
     resolver: zodResolver(formSchema),
   });
+
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (open === "modify") {
@@ -57,8 +65,39 @@ export const TaskFormDialog = ({
   };
 
   const onSubmit: SubmitHandler<any> = (data) => {
-    console.log(data);
-    onCloseDialog();
+    if (open === "modify") {
+      if (!initialValue || !initialValue.id) return;
+
+      setIsLoading(true);
+      toast.promise(patchTaskAPI(initialValue.id, data), {
+        loading: "Updating Task",
+        success: () => {
+          setIsLoading(false);
+          onCloseDialog();
+          onUpdate();
+          return "Task updated successfully";
+        },
+        error: (err) => {
+          setIsLoading(false);
+          return err?.response?.data?.message || "Error during updation";
+        },
+      });
+    } else {
+      setIsLoading(true);
+      toast.promise(postTaskAPI(data), {
+        loading: "Adding Task",
+        success: () => {
+          setIsLoading(false);
+          onCloseDialog();
+          onUpdate();
+          return "Task added successfully";
+        },
+        error: (err) => {
+          setIsLoading(false);
+          return err?.response?.data?.message || "Error during creation";
+        },
+      });
+    }
   };
 
   return (
@@ -118,7 +157,11 @@ export const TaskFormDialog = ({
               render={({ field, fieldState }) => (
                 <div>
                   <InputLabel htmlFor={"dueAt"}>Due Date</InputLabel>
-                  <CalendarPicker id={field.name} {...field} />
+                  <CalendarPicker
+                    id={field.name}
+                    {...field}
+                    value={field.value || undefined}
+                  />
 
                   <HelperText
                     error={Boolean(fieldState.error)}
@@ -129,27 +172,21 @@ export const TaskFormDialog = ({
                     className="mt-1"
                   />
                 </div>
-
-                // <FormField
-                //   {...field}
-                //   type="date"
-                //   label="Description"
-                //   placeholder="Get bread, milk, eggs, etc"
-                //   error={Boolean(fieldState.error)}
-                //   helperText={
-                //     (fieldState.error && fieldState.error?.message) ||
-                //     "Enter a due date for you task (Optional)"
-                //   }
-                // />
               )}
             />
 
             <div className="flex items-center gap-4 mt-6">
-              <Button variant="outline" width="full" onClick={onCloseDialog}>
+              <Button
+                type="button"
+                variant="outline"
+                width="full"
+                onClick={() => onCloseDialog()}
+              >
                 Cancel
               </Button>
               <Button type="submit" width="full">
-                Add Task <FiArrowRight className="ml-2" />
+                {open === "create" ? "Add Task" : "Update Task"}
+                <FiArrowRight className="ml-2" />
               </Button>
             </div>
           </div>
