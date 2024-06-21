@@ -1,3 +1,5 @@
+import clsx from "clsx";
+
 import {
   HelperText,
   Input,
@@ -6,7 +8,6 @@ import {
   Textarea,
   TextareaProps,
 } from "@/components";
-import clsx from "clsx";
 
 type ComponentProps = TextareaProps & InputProps;
 

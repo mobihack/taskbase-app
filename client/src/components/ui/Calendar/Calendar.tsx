@@ -1,9 +1,10 @@
 import * as React from "react";
 import { DayPicker } from "react-day-picker";
+import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 
 import { cn } from "@/lib/utils";
+
 import { buttonVariants } from "../Button/Button";
-import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 
 export type CalendarProps = React.ComponentProps<typeof DayPicker>;
 

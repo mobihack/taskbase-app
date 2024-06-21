@@ -1,7 +1,3 @@
-import { postSignUpAPI } from "@/api/auth/postSignUpAPI";
-import { Button } from "@/components";
-import { FormField } from "@/containers";
-import { useAuth } from "@/context/useAuth";
 import { zodResolver } from "@hookform/resolvers/zod";
 import clsx from "clsx";
 import Link from "next/link";
@@ -10,6 +6,11 @@ import { useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { z } from "zod";
+
+import { postSignUpAPI } from "@/api/auth/postSignUpAPI";
+import { Button } from "@/components";
+import { FormField } from "@/containers";
+import { useAuth } from "@/context/useAuth";
 const userSchema = z
   .object({
     email: z.string().email(),

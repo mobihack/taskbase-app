@@ -1,27 +1,29 @@
 "use client";
 
-import { Button, Input, Chip, LoadingIndicator } from "@/components";
+import { DndContext, DragEndEvent } from "@dnd-kit/core";
+import { useRouter } from "next/router";
+import { useMemo, useState } from "react";
+import toast from "react-hot-toast";
+import { FiLogOut, FiPlus } from "react-icons/fi";
+
+import { deleteTaskAPI } from "@/api/task/deleteTaskAPI";
+import { getTasksAPI } from "@/api/task/getTasksAPI";
+import { patchTaskAPI } from "@/api/task/patchTaskAPI";
+import { Button, Chip, Input, LoadingIndicator } from "@/components";
 import { TaskStatus } from "@/constants";
 import { ConfirmDialog } from "@/containers";
-import { FiLogOut, FiPlus } from "react-icons/fi";
-import { DndContext, DragEndEvent } from "@dnd-kit/core";
-import { useMemo, useState } from "react";
+import { useAuth } from "@/context/useAuth";
+import { useFetch } from "@/hooks";
+
 import {
-  TaskFormDialog,
-  TaskViewerDialog,
-  TaskCard,
-  TaskList,
   DashboardHeader,
+  TaskCard,
   TaskEmpty,
+  TaskFormDialog,
+  TaskList,
+  TaskViewerDialog,
 } from "./components";
 import { Task } from "./DashboardMain.utils";
-import { useFetch } from "@/hooks";
-import { getTasksAPI } from "@/api/task/getTasksAPI";
-import toast from "react-hot-toast";
-import { deleteTaskAPI } from "@/api/task/deleteTaskAPI";
-import { patchTaskAPI } from "@/api/task/patchTaskAPI";
-import { useAuth } from "@/context/useAuth";
-import { useRouter } from "next/router";
 
 type TaskStatusKey = keyof typeof TaskStatus;
 

@@ -1,15 +1,16 @@
-import { Button } from "@/components";
-import { CONFIG } from "@/config";
-import { FormField } from "@/containers";
 import { zodResolver } from "@hookform/resolvers/zod";
 import clsx from "clsx";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { z } from "zod";
 import { toast } from "react-hot-toast";
+import { z } from "zod";
+
 import { postLogInAPI } from "@/api/auth/postLogInAPI";
-import { useRouter } from "next/router";
+import { Button } from "@/components";
+import { CONFIG } from "@/config";
+import { FormField } from "@/containers";
 import { useAuth } from "@/context/useAuth";
 
 const userSchema = z.object({

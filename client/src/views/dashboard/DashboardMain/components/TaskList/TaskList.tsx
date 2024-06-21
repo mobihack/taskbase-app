@@ -1,7 +1,8 @@
-import { TaskStatus } from "@/constants";
 import { useDroppable } from "@dnd-kit/core";
 import clsx from "clsx";
 import { ReactNode } from "react";
+
+import { TaskStatus } from "@/constants";
 
 interface Props {
   children: ReactNode;

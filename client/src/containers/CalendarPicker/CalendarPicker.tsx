@@ -1,11 +1,11 @@
 "use client";
 
-import * as React from "react";
 import { format } from "date-fns";
-
-import { cn } from "@/lib/utils";
-import { Button, Calendar, CalendarProps, Popover } from "@/components/ui";
+import * as React from "react";
 import { FiCalendar } from "react-icons/fi";
+
+import { Button, Calendar, CalendarProps, Popover } from "@/components/ui";
+import { cn } from "@/lib/utils";
 
 interface Props extends Pick<CalendarProps, "id"> {
   value: string | undefined;

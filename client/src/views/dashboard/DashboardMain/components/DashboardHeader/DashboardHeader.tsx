@@ -1,5 +1,6 @@
-import { Button } from "@/components";
 import { FiLogOut, FiPlus } from "react-icons/fi";
+
+import { Button } from "@/components";
 
 export const DashboardHeader = ({
   onCreateClicked,

@@ -1,7 +1,9 @@
-import { Button, DropdownMenu } from "@/components";
-import { DATE_FORMAT, TaskStatus } from "@/constants";
+import { useDraggable } from "@dnd-kit/core";
+import { CSS } from "@dnd-kit/utilities";
 import clsx from "clsx";
 import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+import { useMemo } from "react";
 import {
   FiClock,
   FiEdit2,
@@ -11,11 +13,8 @@ import {
 } from "react-icons/fi";
 import { RiDraggable } from "react-icons/ri";
 
-import relativeTime from "dayjs/plugin/relativeTime";
-import { useMemo } from "react";
-
-import { useDraggable } from "@dnd-kit/core";
-import { CSS } from "@dnd-kit/utilities";
+import { Button, DropdownMenu } from "@/components";
+import { DATE_FORMAT, TaskStatus } from "@/constants";
 
 dayjs.extend(relativeTime);
 

@@ -1,5 +1,6 @@
-import { useAuth } from "@/context/useAuth";
 import { useRouter } from "next/router";
+
+import { useAuth } from "@/context/useAuth";
 
 export default function Home() {
   const { currentUser } = useAuth();

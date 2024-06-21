@@ -1,4 +1,5 @@
 import axios, { AxiosError, AxiosRequestConfig } from "axios";
+
 import { CONFIG } from "@/config";
 
 interface RequestReturn<T> {

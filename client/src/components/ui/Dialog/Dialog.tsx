@@ -1,8 +1,8 @@
-import * as React from "react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
+import * as React from "react";
+import { FiX } from "react-icons/fi";
 
 import { cn } from "@/lib/utils";
-import { FiX } from "react-icons/fi";
 
 const DialogRoot = DialogPrimitive.Root;
 
@@ -120,14 +120,14 @@ export const Dialog = {
 };
 
 export {
-  DialogRoot,
-  DialogPortal,
-  DialogOverlay,
   DialogClose,
-  DialogTrigger,
   DialogContent,
-  DialogHeader,
-  DialogFooter,
-  DialogTitle,
   DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogOverlay,
+  DialogPortal,
+  DialogRoot,
+  DialogTitle,
+  DialogTrigger,
 };

@@ -1,6 +1,7 @@
+import { ReactNode } from "react";
+
 import { Button, Dialog } from "@/components";
 import { ButtonProps } from "@/components/ui/Button/Button";
-import { ReactNode } from "react";
 
 interface Props {
   title: ReactNode;
