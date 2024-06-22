@@ -14,8 +14,9 @@
     "incremental": true,
     "paths": {
       "@/*": ["./src/*"]
-    }
+    },
+    "types": ["vitest/globals"]
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+  "include": ["next-env.d.ts", "test/vitest.setup.ts", "**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules"]
 }
