@@ -24,7 +24,7 @@ interface Props {
   title: string;
   description: string;
   status: TaskStatus;
-  dueAt?: string;
+  dueAt?: string | null;
 
   onClick: (id: string) => void | Promise<void>;
   onModify: (id: string) => void | Promise<void>;
@@ -94,11 +94,16 @@ export const TaskCard = ({
       <div className="flex gap-1">
         <DropdownMenu.root>
           <DropdownMenu.trigger asChild>
-            <Button variant="ghost" size="iconSmall">
+            <Button
+              variant="ghost"
+              size="iconSmall"
+              role="button"
+              aria-label="More Actions"
+            >
               <FiMoreVertical />
             </Button>
           </DropdownMenu.trigger>
-          <DropdownMenu.content className="w-40">
+          <DropdownMenu.content aria-label="context menu" className="w-40">
             <DropdownMenu.label>Actions</DropdownMenu.label>
             <DropdownMenu.separator />
             <DropdownMenu.group>
@@ -108,6 +113,7 @@ export const TaskCard = ({
                   e.stopPropagation();
                   onModify(id);
                 }}
+                aria-label="Edit Task"
               >
                 <FiEdit2 className="mr-2 h-4 w-4" />
                 <span>Edit</span>
@@ -118,6 +124,8 @@ export const TaskCard = ({
                   e.stopPropagation();
                   onDelete(id);
                 }}
+                aria-label="Delete Task"
+                data-testid="delete-task"
               >
                 <FiTrash2 className="mr-2 h-4 w-4" />
                 <span>Delete</span>
