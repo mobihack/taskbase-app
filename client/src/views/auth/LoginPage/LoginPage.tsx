@@ -7,18 +7,16 @@ import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { z } from "zod";
 
-import { postLogInAPI } from "@/api/auth/postLogInAPI";
 import { Button } from "@/components";
-import { CONFIG } from "@/config";
 import { FormField } from "@/containers";
 import { useAuth } from "@/context/useAuth";
 
-const userSchema = z.object({
+export const userLoginSchema = z.object({
   email: z.string().email(),
   password: z.string().min(8),
 });
 
-type FormValues = z.infer<typeof userSchema>;
+type FormValues = z.infer<typeof userLoginSchema>;
 
 export const LoginPage = (): JSX.Element => {
   const router = useRouter();
@@ -28,7 +26,7 @@ export const LoginPage = (): JSX.Element => {
       email: "",
       password: "",
     },
-    resolver: zodResolver(userSchema),
+    resolver: zodResolver(userLoginSchema),
   });
 
   const [isLoading, setIsLoading] = useState(false);

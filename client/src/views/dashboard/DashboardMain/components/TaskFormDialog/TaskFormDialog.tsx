@@ -10,7 +10,7 @@ import { postTaskAPI } from "@/api/task/postTaskAPI";
 import { Button, Dialog, HelperText, InputLabel } from "@/components";
 import { CalendarPicker, FormField } from "@/containers";
 
-const formSchema = z.object({
+export const taskFormSchema = z.object({
   title: z.string().min(3, { message: "Minimum 3 characters required" }),
   description: z.string().min(5, { message: "Minimum 5 characters required" }),
   dueAt: z
@@ -29,7 +29,7 @@ const INITIAL_VALUE = {
   dueAt: "",
 };
 
-type FormValues = z.infer<typeof formSchema> & { id: string };
+type FormValues = z.infer<typeof taskFormSchema> & { id: string };
 
 interface Props {
   onClose: () => void;
@@ -48,7 +48,7 @@ export const TaskFormDialog = ({
 }: Props): JSX.Element => {
   const { control, handleSubmit, reset } = useForm<FormValues>({
     defaultValues: INITIAL_VALUE,
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(taskFormSchema),
   });
 
   const [isLoading, setIsLoading] = useState(false);

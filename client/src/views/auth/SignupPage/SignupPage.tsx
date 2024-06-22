@@ -7,11 +7,11 @@ import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { z } from "zod";
 
-import { postSignUpAPI } from "@/api/auth/postSignUpAPI";
 import { Button } from "@/components";
 import { FormField } from "@/containers";
 import { useAuth } from "@/context/useAuth";
-const userSchema = z
+
+export const userSignupSchema = z
   .object({
     email: z.string().email(),
     password: z.string().min(8),
@@ -26,7 +26,7 @@ const userSchema = z
       });
     }
   });
-type FormValues = z.infer<typeof userSchema>;
+type FormValues = z.infer<typeof userSignupSchema>;
 
 export const SignupPage = (): JSX.Element => {
   const auth = useAuth();
@@ -37,7 +37,7 @@ export const SignupPage = (): JSX.Element => {
       password: "",
       password_confirm: "",
     },
-    resolver: zodResolver(userSchema),
+    resolver: zodResolver(userSignupSchema),
   });
 
   const [isLoading, setIsLoading] = useState(false);
