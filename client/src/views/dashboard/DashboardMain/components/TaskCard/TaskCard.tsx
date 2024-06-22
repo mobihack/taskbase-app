@@ -67,7 +67,10 @@ export const TaskCard = ({
           {...listeners}
           {...attributes}
           role="button"
-          className={clsx("cursor-grab p-2", isDragging && "cursor-grabbing")}
+          className={clsx(
+            "cursor-grab p-2 touch-none",
+            isDragging && "cursor-grabbing"
+          )}
         >
           <RiDraggable className="text-gray-500" />
         </button>
