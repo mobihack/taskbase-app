@@ -26,6 +26,7 @@ export const userSignupSchema = z
       });
     }
   });
+
 type FormValues = z.infer<typeof userSignupSchema>;
 
 export const SignupPage = (): JSX.Element => {
@@ -132,7 +133,7 @@ export const SignupPage = (): JSX.Element => {
             />
 
             <Button width="full" className="mt-6" disabled={isLoading}>
-              Login
+              Signup
             </Button>
           </div>
         </form>
