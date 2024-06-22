@@ -7,10 +7,10 @@ import {
   useState,
 } from "react";
 
-import { deleteLogOutAPI } from "@/api/auth/deleteLogOutAPI";
-import { getValidateUserAPI } from "@/api/auth/getValidateUserAPI";
-import { postLogInAPI } from "@/api/auth/postLogInAPI";
-import { postSignUpAPI } from "@/api/auth/postSignUpAPI";
+import { deleteLogOutAPI } from "@/api/auth";
+import { getValidateUserAPI } from "@/api/auth";
+import { postLogInAPI } from "@/api/auth";
+import { postSignUpAPI } from "@/api/auth";
 import { LoadingIndicator } from "@/components";
 import { useFetch } from "@/hooks";
 

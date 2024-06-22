@@ -7,9 +7,9 @@ import toast from "react-hot-toast";
 import { FiCheck, FiLogOut, FiPlus } from "react-icons/fi";
 import { RxCaretSort } from "react-icons/rx";
 
-import { deleteTaskAPI } from "@/api/task/deleteTaskAPI";
-import { getTasksAPI } from "@/api/task/getTasksAPI";
-import { patchTaskAPI } from "@/api/task/patchTaskAPI";
+import { deleteTaskAPI } from "@/api/task";
+import { getTasksAPI } from "@/api/task";
+import { patchTaskAPI } from "@/api/task";
 import {
   Button,
   Chip,

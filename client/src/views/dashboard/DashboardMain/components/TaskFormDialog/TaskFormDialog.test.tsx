@@ -6,11 +6,8 @@ import { describe, expect, it, vi } from "vitest";
 import { TaskFormDialog, taskFormSchema } from "./TaskFormDialog";
 
 // Mock API functions
-vi.mock("@/api/task/patchTaskAPI", () => ({
+vi.mock("@/api/task", () => ({
   patchTaskAPI: vi.fn(() => Promise.resolve()),
-}));
-
-vi.mock("@/api/task/postTaskAPI", () => ({
   postTaskAPI: vi.fn(() => Promise.resolve()),
 }));
 
@@ -88,7 +85,7 @@ describe("TaskFormDialog Component", () => {
   });
 
   it("should call postTaskAPI in create mode", async () => {
-    const { postTaskAPI } = await import("@/api/task/postTaskAPI");
+    const { postTaskAPI } = await import("@/api/task");
 
     render(<TaskFormDialog {...mockProps} open="create" />);
 
@@ -111,7 +108,7 @@ describe("TaskFormDialog Component", () => {
   });
 
   it("should call patchTaskAPI in modify mode", async () => {
-    const { patchTaskAPI } = await import("@/api/task/patchTaskAPI");
+    const { patchTaskAPI } = await import("@/api/task");
 
     render(<TaskFormDialog {...mockProps} open="modify" />);
 

@@ -5,8 +5,8 @@ import toast from "react-hot-toast";
 import { FiArrowRight } from "react-icons/fi";
 import * as z from "zod";
 
-import { patchTaskAPI } from "@/api/task/patchTaskAPI";
-import { postTaskAPI } from "@/api/task/postTaskAPI";
+import { patchTaskAPI } from "@/api/task";
+import { postTaskAPI } from "@/api/task";
 import { Button, Dialog, HelperText, InputLabel } from "@/components";
 import { CalendarPicker, FormField } from "@/containers";
 
