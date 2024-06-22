@@ -16,7 +16,7 @@ export const DashboardHeader = ({
         <img
           src="/taskbase-logo.png"
           className="h-9 mx-auto object-contain"
-          alt=""
+          alt="TaskBase Logo"
         />
       </div>
       <div className="w-full sm:w-auto flex items-center justify-center gap-2">
