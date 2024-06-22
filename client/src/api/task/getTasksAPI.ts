@@ -1,6 +1,6 @@
 import { request } from "@/lib/axios-request.util";
 import { ApiResponse } from "@/types/api-response";
-import { Task } from "@/views/dashboard/DashboardMain/DashboardMain.utils";
+import { Task } from "@/types/task.type";
 
 export const getTasksAPI = async (url: string): Promise<Task[]> => {
   const { data, error } = await request<ApiResponse<{ tasks: Task[] }>>({

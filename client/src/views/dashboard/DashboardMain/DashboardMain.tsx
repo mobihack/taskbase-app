@@ -21,6 +21,7 @@ import { TaskStatus } from "@/constants";
 import { ConfirmDialog } from "@/containers";
 import { useAuth } from "@/context/useAuth";
 import { useFetch } from "@/hooks";
+import { Task, TaskStatusKey } from "@/types/task.type";
 
 import {
   DashboardHeader,
@@ -35,8 +36,6 @@ import {
   SortCriteria,
   SortNameMap,
   sortTasks,
-  Task,
-  TaskStatusKey,
 } from "./DashboardMain.utils";
 
 export const DashboardMain = (): JSX.Element => {

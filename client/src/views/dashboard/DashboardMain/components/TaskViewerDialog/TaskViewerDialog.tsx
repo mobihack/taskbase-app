@@ -1,17 +1,9 @@
 import dayjs from "dayjs";
 import { ReactNode } from "react";
-import { FiArrowRight } from "react-icons/fi";
 
 import { Button, Dialog } from "@/components";
 import { DATE_FORMAT } from "@/constants";
-
-import { Task } from "../../DashboardMain.utils";
-
-const INITIAL_VALUE = {
-  title: "",
-  description: "",
-  dueAt: "",
-};
+import { Task } from "@/types/task.type";
 
 interface Props {
   open: boolean;

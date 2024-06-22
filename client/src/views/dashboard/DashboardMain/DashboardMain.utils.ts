@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 
-import { TaskStatus } from "@/constants";
+import { Task } from "@/types/task.type";
 
 export enum SortCriteria {
   DUE_AT = "dueAt",
@@ -13,23 +13,6 @@ export const SortNameMap: Record<SortCriteria, string> = {
   [SortCriteria.DUE_AT]: "Due On",
   [SortCriteria.NAME]: "Name",
 };
-
-const SAMPLE_TASK = {
-  id: "",
-  title: "Hello World",
-  description:
-    "Hello World Hello World Hello World Hello World Hello World Hello World Hello World",
-  status: TaskStatus.TODO,
-
-  dueAt: dayjs("10-12-2025").toISOString(),
-
-  createdAt: dayjs("2023-10-31T03:00:00").toISOString(),
-  updatedAt: dayjs("2024-04-21T12:00:00").toISOString(),
-};
-
-export type Task = typeof SAMPLE_TASK;
-
-export type TaskStatusKey = keyof typeof TaskStatus;
 
 // Function to filter tasks by search term
 export const filterBySearchTerm = (
