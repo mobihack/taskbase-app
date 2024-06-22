@@ -239,7 +239,7 @@ export const DashboardMain = (): JSX.Element => {
             Search through name and description.
           </p>
 
-          <div className="flex items-center gap-2 pl-3 mt-3">
+          <div className="flex flex-wrap items-center gap-2 pl-3 mt-3">
             <Chip
               variant={filters.length === 0 ? "filled" : "outlined"}
               size="small"
