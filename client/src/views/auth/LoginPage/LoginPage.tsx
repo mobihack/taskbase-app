@@ -57,7 +57,7 @@ export const LoginPage = (): JSX.Element => {
     <div className="min-h-screen flex flex-col items-center justify-center h-96">
       <div
         className={clsx(
-          "max-w-sm w-full",
+          "bg-white max-w-sm w-full",
           "border border-gray",
           "rounded-lg p-4"
         )}
