@@ -36,3 +36,10 @@ yarn-error.log*
 next-env.d.ts
 
 certificates
+
+# Ignore the entire .yarn directory
+.yarn/*
+
+# But keep the releases and plugins directories
+!.yarn/releases
+!.yarn/plugins
