@@ -57,7 +57,7 @@ export const TaskCard = ({
       style={{ transform: CSS.Translate.toString(transform) }}
       className={clsx(
         "group bg-white hover:bg-brand-50 transition-colors",
-        "px-4 md:!border md:rounded-xl rounded-none",
+        "pl-4 pr-2 md:!border md:rounded-xl rounded-none",
         "flex items-center justify-between gap-4",
         isDragging && "border !bg-white !border-gray-200"
       )}
@@ -75,7 +75,7 @@ export const TaskCard = ({
 
       <button className="text-left flex-1 py-3" onClick={() => onClick(id)}>
         <p className="text-sm">{title}</p>
-        <p className="text-xs text-gray-600 line-clamp-1">{description}</p>
+        <p className="text-xs text-gray-600 line-clamp-2">{description}</p>
 
         {dueAt && (
           <time
